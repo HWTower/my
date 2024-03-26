@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        .car-table {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .car-item {
+            margin-bottom: 10px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        table {
+            border-spacing: 0;
+            border-collapse: collapse;
+            margin-top: 10px;
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>汽车列表</h2>
+    <button onclick="addCar()">添加汽车</button>
+    <button onclick="editCar()">编辑汽车</button>
+    <button onclick="deleteCar()">删除汽车</button>
+    <button onclick="searchCar()">查找汽车</button>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>品牌</th>
+                <th>颜色</th>
+                <th>价格</th>
+                <th>大小</th>
+            </tr>
+        </thead>
+        <tbody class="car-table" style="text-align: center;;"></tbody>
+    </table>
+    <script>
+        class Car {
+            constructor(brand, color, price, size) {
+                this.brand = brand;
+                this.color = color;
+                this.price = price;
+                this.size = size;
+            }
+        }
+
+        class CarList {
+            constructor() {
+                this.list = [];
+            }
+
+            addCar(brand, color, price, size) {
+                const car = new Car(brand, color, price, size);
+                this.list.push(car);
+            }
+
+            editCar(index, brand, color, price, size) {
+                if (index >= 0 && index < this.list.length) {
+                    const car = this.list[index];
+                    car.brand = brand;
+                    car.color = color;
+                    car.price = price;
+                    car.size = size;
+                } else {
+                    alert("请输入有效的汽车索引");
+                }
+            }
+
+            deleteCar(index) {
+                if (index >= 0 && index < this.list.length) {
+                    this.list.splice(index, 1);
+                } else {
+                    alert("请输入有效的汽车索引");
+                }
+            }
+
+            searchCar(brand) {
+                return this.list.filter(car => car.brand === brand);
+            }
+
+            displayCar() {
+                const carListElement = $('.car-table');
+                carListElement.empty();
+                this.list.forEach(car => {
+                    const tr = $('<tr></tr>');
+                    const tdBrand = $('<td></td>').text(car.brand);
+                    const tdColor = $('<td></td>').text(car.color);
+                    const tdPrice = $('<td></td>').text(car.price);
+                    const tdSize = $('<td></td>').text(car.size);
+                    tr.append(tdBrand, tdColor, tdPrice, tdSize);
+                    carListElement.append(tr);
+                });
+            }
+        }
+
+        let carList;
+
+        $(document).ready(function () {
+            carList = new CarList();
+
+            carList.addCar('丰田', '红色', 20000, 'A');
+            carList.addCar('本田', '蓝色', 25000, 'B');
+            carList.addCar('福特', '黑色', 30000, 'C');
+
+            carList.displayCar();
+        });
+
+        function addCar() {
+            const brand = prompt("请输入汽车品牌");
+            const color = prompt("请输入汽车颜色");
+            const price = prompt("请输入汽车价格");
+            const size = prompt("请输入汽车大小");
+            carList.addCar(brand, color, price, size);
+            carList.displayCar();
+        }
+
+        function editCar() {
+            const index = parseInt(prompt("请输入汽车索引"));
+            const brand = prompt("请输入汽车品牌");
+            const color = prompt("请输入汽车颜色");
+            const price = prompt("请输入汽车价格");
+            const size = prompt("请输入汽车大小");
+            carList.editCar(index, brand, color, price, size);
+            carList.displayCar();
+        }
+
+        function deleteCar() {
+            const index = parseInt(prompt("请输入汽车索引"));
+            carList.deleteCar(index);
+            carList.displayCar();
+        }
+
+        function searchCar() {
+            const brand = prompt("请输入汽车品牌");
+            const result = carList.searchCar(brand);
+            const carListElement = $('.car-table');
+            carListElement.empty();
+
+            if (result.length > 0) {
+                result.forEach(car => {
+                    const tr = $('<tr></tr>');
+                    const tdBrand = $('<td></td>').text(car.brand);
+                    const tdColor = $('<td></td>').text(car.color);
+                    const tdPrice = $('<td></td>').text(car.price);
+                    const tdSize = $('<td></td>').text(car.size);
+                    tr.append(tdBrand, tdColor, tdPrice, tdSize);
+                    carListElement.append(tr);
+                });
+            } else {
+                carList.displayCar();
+            }
+        }
+    </script>
+</body>
+
+</html>
